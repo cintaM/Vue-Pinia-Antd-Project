@@ -1,5 +1,6 @@
 import {
   createUserWithEmailAndPassword,
+  sendEmailVerification,
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth'
@@ -25,10 +26,12 @@ export const useUserStore = defineStore('user', () => {
         email,
         password,
       )
-      userData.value = { email: user.email, uid: user.uid }
+      //userData.value = { email: user.email, uid: user.uid }
+      await sendEmailVerification(auth.currentUser);
       router.push('/login')
     } catch (error) {
-      console.log(error)
+      console.log(error.code)
+      return error.code
     }finally{
         loadingUser.value = false
     }
@@ -41,7 +44,8 @@ export const useUserStore = defineStore('user', () => {
       userData.value = { email: user.email, uid: user.uid }
       router.push('/')
     } catch (error) {
-      console.log(error)
+      console.log(error.code)
+      return error.code
     } finally{
         loadingUser.value = false
     }
