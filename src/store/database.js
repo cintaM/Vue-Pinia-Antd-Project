@@ -1,5 +1,5 @@
 import { async } from "@firebase/util";
-import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore/lite";
+import { addDoc, collection, deleteDoc, doc, getDocs, getDoc, query, updateDoc, where } from "firebase/firestore/lite";
 import { defineStore} from "pinia";
 import { ref } from 'vue'
 import {db} from '../firebaseConfig'
@@ -20,7 +20,7 @@ export const useDataBaseStore = defineStore ('database', () => {
         }
         loading.value= true
         documents.value = []
-        const q = query(collection(db, 'urls'))
+        const q = query(collection(db, 'urls'), where("user", "==", auth.currentUser.uid))
         try {   
             const querySnapShot = await getDocs(q)
             console.log(querySnapShot)
@@ -57,18 +57,18 @@ export const useDataBaseStore = defineStore ('database', () => {
         loading.value = true
         try {
             const docRef = doc(db, 'urls', id)
-            const docSnap = await getDocs(docRef)
-            if(docSnap.exists()){
+            const docSnap = await getDoc(docRef)
+            if(!docSnap.exists()){
                 throw new Error("no existe el documento")
             }
-            if(docSnap.data.user !== auth.currentUser.uid){
-                throw new Error("No le pertenece este documento")
+
+            if(docSnap.data().user === auth.currentUser.uid){
+                await updateDoc(docRef, {name: name, })
             }
 
-           await updateDoc(docRef, {name: name, })
            documents.value = documents.value.map(item => item.id === id ? ({...item, name: name}) : item)
            router.push('/')
-            
+    
         } catch (error) {
             console.log(error)
         }finally{
@@ -80,13 +80,11 @@ export const useDataBaseStore = defineStore ('database', () => {
         loading.value = true
         try {
             const docRef = doc(db, 'urls', id)
-            const docSnap = await getDocs(docRef)
-            if(docSnap.exists()){
+            const docSnap = await getDoc(docRef)
+            if(!docSnap.exists()){
                 throw new Error("no existe el documento")
             }
-            if(docSnap.data.user !== auth.currentUser.uid){
-                throw new Error("No le pertenece este documento")
-            }
+          
             await deleteDoc(docRef);
             documents.value = documents.value.filter(item => item.id !== id)
         } catch (error) {

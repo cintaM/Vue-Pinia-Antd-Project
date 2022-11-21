@@ -20,13 +20,13 @@ const requireAuth = async(to, from, next) => {
 }
 
 const routes = [
-{ path:'/', component: HomeView, beforeEnter: requireAuth
+{ path:'/', component: HomeView, beforeEnter: requireAuth, name: 'home'
 },
-{ path:'/editar/:id', component: EditView, beforeEnter: requireAuth
+{ path:'/editar/:id', component: EditView, beforeEnter: requireAuth, name: 'edit'
 },
-{ path:'/login', component: LoginView
+{ path:'/login', component: LoginView, name: 'login'
 },
-{ path:'/register', component: RegisterView
+{ path:'/register', component: RegisterView, name: 'register'
 }
 
 ]

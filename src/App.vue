@@ -1,29 +1,56 @@
 <template>
-<div>
-  <nav v-if="!userStore.loadingSession">
-    <RouterLink to="/" v-if="userStore.userData">Home</RouterLink>||
-    <RouterLink v-if="!userStore.userData" to="/login">Login</RouterLink>||
-    <RouterLink v-if="!userStore.userData" to="/register">Register</RouterLink>||
-    <button v-if="userStore.userData" @click="userStore.logOutUser">Logout</button>
-  </nav>
-  <div v-else>
-    Cargando información...
-  </div>
-  
-  <h1>
-  APP base
-</h1>
-
-
-</div>
-<RouterView/>
+<a-layout>
+  <a-layout-header v-if="!userStore.loadingSession">
+      <a-menu
+          mode="horizontal"
+          theme="dark"
+          :style="{ lineHeight: '64px' }"
+          v-model:selectedKeys="selectedKeys"
+      >
+          <a-menu-item v-if="userStore.userData" key="home">
+              <router-link to="/">Home</router-link>
+          </a-menu-item>
+          <a-menu-item v-if="!userStore.userData" key="login">
+              <router-link to="/login">Login</router-link>
+          </a-menu-item>
+          <a-menu-item v-if="!userStore.userData" key="register">
+              <router-link to="/register">Register</router-link>
+          </a-menu-item>
+          <a-menu-item
+              @click="userStore.logOutUser"
+              v-if="userStore.userData"
+              key="logout"
+          >
+              Logout
+          </a-menu-item>
+      </a-menu>
+  </a-layout-header>
+  <a-layout-content style="padding: 0 50px">
+      <div
+          :style="{
+              background: '#fff',
+              padding: '24px',
+              minHeight: '280px',
+          }"
+      >
+          <div v-if="userStore.loadingSession">loading user...</div>
+          <router-view></router-view>
+      </div>
+  </a-layout-content>
+</a-layout>
 </template>
 <script setup>
 import { useUserStore } from './store/user';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router'
 
 const userStore = useUserStore();
+const route = useRoute();
+const selectedKeys = ref([])
 
-
+watch(() => route.name, () => {
+  selectedKeys.value = [route.name]
+})
 </script>
 <style scoped>
 </style>
