@@ -18,7 +18,7 @@
               type: 'email',
               whitespace: true,
               message: 'Por favor, introduce un correo',
-            },
+            }
           ]"
         >
           <a-input v-model:value="formState.email" />
@@ -41,8 +41,10 @@
         <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
           <a-button
             type="primary"
+            large
             html-type="submit"
             :disabled="userStore.loadingUser"
+            :loading="userStore.loadingUser" 
           >
             Login
           </a-button>

@@ -26,13 +26,7 @@
       </a-menu>
   </a-layout-header>
   <a-layout-content style="padding: 0 50px">
-      <div
-          :style="{
-              background: '#fff',
-              padding: '24px',
-              minHeight: '280px',
-          }"
-      >
+      <div class="container">
           <div v-if="userStore.loadingSession">loading user...</div>
           <router-view></router-view>
       </div>
@@ -52,5 +46,12 @@ watch(() => route.name, () => {
   selectedKeys.value = [route.name]
 })
 </script>
-<style scoped>
+<style >
+
+.container{
+    background-color: #fff;
+    padding: 24px;
+    min-height: calc(100vh - 64px);
+}
+
 </style>
