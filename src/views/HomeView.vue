@@ -30,6 +30,7 @@
           <a-button @click="router.push(`/editar/${item.id}`)">
             Editar
           </a-button>
+          <a-button @click="copyPaste(item.id)"></a-button>
         </a-space>
       </template>
       <p>{{ item.name }}</p>
@@ -63,6 +64,22 @@ const cancel = (e) => {
     console.log(e);
     message.error("No se eliminó");
 };
+
+const copyPaste = (id) => {
+  if(!navigator.clipboard){
+    console.log('no se pudo copiar')
+  }
+
+  const path = `${window.location.origin}/${id}`
+
+  navigator.clipboard.writeText(path)
+  .then(()=>{
+    console.log('texto copiado')
+  })
+  .catch((err) => {
+    console.log('ocurrió un error', err)
+  })
+}
 </script>
 
 <style></style>

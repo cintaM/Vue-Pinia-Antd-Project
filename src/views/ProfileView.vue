@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Profile</h1>
-    <a-avatar :src="userStore.userData.photoURL"/>
+    <a-avatar class="avatar" :src="userStore.userData.photoURL"/>
     <a-row>
       <a-col span="12" offset="6">
         <a-form
@@ -125,15 +125,7 @@ const handleRemove = (file) => {
 }
 
 const onFinish = async () => {
-  const response = await userStore.updateUser(userStore.userData.displayName)
-
-  if(fileList.value[0]){
-    await userStore.updateImagen(fileList.value[0])
-  }
-    console.log(fileList.value[0])
-    // fileList.value.forEach(file => {
-    //     console.log(file)
-    // })
+  const response = await userStore.updateUser(userStore.userData.displayName, fileList.value[0])
 
   if (!response) {
     return message.success('se actualizó tu información de perfil')
@@ -141,4 +133,6 @@ const onFinish = async () => {
   message.error('ocurrió un error al actualizar el perfil')
 }
 </script>
-<style></style>
+<style>
+
+</style>

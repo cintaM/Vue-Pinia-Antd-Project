@@ -113,34 +113,33 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const updateUser = async(displayName) => {
+  const updateUser = async(displayName, imagen) => {
+    loadingSession.value= true
     try {
-       await updateProfile(auth.currentUser, {
-      displayName: displayName
-    })
-    setUser(auth.currentUser)
-    } catch (error) {
-      console.log(error)
-      return error.code
-    }
-   
-  }
-
-  const updateImagen = async(imagen) => {
-    try {
-
-      console.log(imagen)
-      const storageRef = storageRef1( storage, `profiles/${userData.value.uid}`)
+      if(imagen){
+        const storageRef = storageRef1( storage, `profiles/${userData.value.uid}`)
       await uploadBytes(storageRef, imagen.originFileObj)
       const photoURL = await getDownloadURL(storageRef);
       await updateProfile(auth.currentUser, {
         photoURL
       })
+      }
+    
+     
+       await updateProfile(auth.currentUser, {
+      displayName: displayName
+    })
+     setUser.value(auth.currentUser)
+    setUser(auth.currentUser)
     } catch (error) {
       console.log(error)
       return error.code
+    }finally{
+      loadingSession.value = false;
     }
+   
   }
+
 
   return {
     userData,
@@ -152,6 +151,5 @@ export const useUserStore = defineStore('user', () => {
     loadingSession,
     setUser,
     updateUser,
-    updateImagen
   }
 })

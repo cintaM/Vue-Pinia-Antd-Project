@@ -1,5 +1,5 @@
 
-import { addDoc, collection, deleteDoc, doc, getDocs, getDoc, query, updateDoc, where } from "firebase/firestore/lite";
+import {collection, deleteDoc, doc, getDocs, getDoc, query, updateDoc, where, setDoc } from "firebase/firestore/lite";
 import { defineStore} from "pinia";
 import { ref } from 'vue'
 import {db} from '../firebaseConfig'
@@ -46,10 +46,10 @@ export const useDataBaseStore = defineStore ('database', () => {
                 user: auth.currentUser.uid
 
             }
-            const docRef =  await addDoc(collection(db, 'urls'), {
+             await setDoc(doc(db, 'urls', objectDoc.short), {
                 objectDoc
             });
-            documents.value.push({id: docRef.id, ...objectDoc})
+            documents.value.push({id: objectDoc.short, ...objectDoc})
         } catch (error) {
             console.log(error.code)
             return error.code
@@ -122,6 +122,26 @@ export const useDataBaseStore = defineStore ('database', () => {
             loadingURL.value = false;
         }
     }
+
+    const accessURL = async(id) => {
+        loadingURL.value= true;
+        try {
+            const docRef = doc(db, "urls", id);
+            const docSnap = await getDoc(docRef);
+    
+            if (!docSnap.exists()) {
+                return false;
+            }
+                return docSnap.data().name;
+           
+        } catch (error) {
+            console.log(error.message);
+            return false
+        } finally {
+            loadingURL.value = false;
+        }
+
+    }
     return{
         documents,
         getUrls,
@@ -130,6 +150,7 @@ export const useDataBaseStore = defineStore ('database', () => {
         deleteUrl,
         updateUrl,
         loadingURL,
-        leerUrl
+        leerUrl,
+        accessURL
     }
 })
