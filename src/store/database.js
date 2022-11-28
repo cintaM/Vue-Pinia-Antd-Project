@@ -26,12 +26,12 @@ export const useDataBaseStore = defineStore ('database', () => {
         try {   
             const querySnapShot = await getDocs(q)
             console.log(querySnapShot)
-            querySnapShot.forEach((doc) => {
-              documents.value.push({id: doc.id, ...doc.data()})
+            querySnapShot.forEach((docs) => {
+              documents.value.push({id: docs.id, ...docs.data()})
             })
         } catch (error) {
-            console.log(error)
-            return error.message
+            console.log(error.code)
+            return error.code
         }finally{
             loading.value = false
         }
